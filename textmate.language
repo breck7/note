@@ -1,0 +1,17 @@
+{	scopeName = 'text.note';
+	fileTypes = ( 'note' );
+	foldingStartMarker = '^ *[^ ]+$';
+	foldingStopMarker = '^[^ ]+ $';
+	patterns = (
+		{	name = 'note.name';
+			match = '^ *([^ ]+)$';
+		},
+		{	name = 'note.name_value';
+			contentName = 'note.value';
+			begin = '^( *)([^ ]+) ';
+			end = '^(?!\1 )';
+			beginCaptures = { 2 = { name = 'note.name'; }; };
+			patterns = ( { include = 'source.js'; } );
+		},
+	);
+}

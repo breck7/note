@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+      "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+    <link rel="stylesheet" href="qunit-git.css" type="text/css"/>
+    <script type="text/javascript" src="jquery-1.8.0.js"></script>
+    <script type="text/javascript" src="../src/Note.js"></script>
+    <script type="text/javascript">
+    // Disable qunit autostart until Nudge is loaded
+    var big
+    var bigdata
+    var stopwatch = new Note()
+    var start = new Date().getTime()
+    var toString = function () {
+
+        var b = big.toString()
+        
+        stopwatch.tostring = new Date().getTime() - start
+        $('pre').html(stopwatch.toString())
+    }
+    var toNote = function () {
+      big = new Note(bigdata)
+      stopwatch.loaded = new Date().getTime() - start
+    }
+    $(document).ready(function() {
+      stopwatch.requested = new Date().getTime() - start
+      $.get('big.note', {}, function (data) {
+        stopwatch.received = new Date().getTime() - start
+        bigdata = data
+        stopwatch.saved = new Date().getTime() - start
+        var button = $('<button>To String</button>')
+        button.on('click', toString)
+        $('body').append(button)
+        toNote()
+      })
+    })
+    </script>
+  </head>
+  <body>
+    <pre></pre>
+  </body>
+</html>
