@@ -103,15 +103,15 @@ Very Basic Usage with Javascript in the Browser
 
 1. Include the note.min.js class:
 
-    <code><script type="text/javascript" src="note.min.js"></src><code>
+<code><script type="text/javascript" src="note.min.js"></src><code>
 
 2. Write some code:
-    <code><script type="text/javascript">
-      var note = new Note()
-      note.name = "Breck"
-      note.gender = "male"
-      alert(note.toString())
-    </script><code>
+<code><script type="text/javascript">
+  var note = new Note()
+  note.name = "Breck"
+  note.gender = "male"
+  alert(note.toString())
+</script><code>
 
 3. Run in your browser.
 
@@ -132,6 +132,23 @@ Although Note has no types and very few features, you can easily build encodings
 For example, you could build a class called Person, that extends note, and expects age to be an integer.
 
 We've built an encoding on top of Note called Blocks, that works as powerful template language for HTML. We've also built an encoding that can turn a full filesystem into Note and vice versa, using base64 encoding of binary data.
+
+Javascript API
+--------------
+
+The Javascript library in this repo works in both the browser and with Node.js.
+
+The API is still somewhat in flux, but there are many neat methods such as diff, patch, and toString that demonstrate the power of Note.
+
+Contributing
+------------
+
+If you'd like to contribute please contact me at breck7@gmail.com.
+
+Support
+-------
+
+Feel free to contact me at breck7@gmail.com for help using or extending Note.
 
 Limitations
 -----------
