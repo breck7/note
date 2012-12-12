@@ -8,29 +8,29 @@ Example
 
 Here's how I could encode an object named Earth:
 
-earth
- age 4,540,000,000yrs
- moons 1
- neighbors
-  mars
-  venus
- population 6,973,738,433
- radius 6.371km
+    earth
+     age 4,540,000,000yrs
+     moons 1
+     neighbors
+      mars
+      venus
+     population 6,973,738,433
+     radius 6.371km
 
 This same object, written in the current dominant object notation, JSON, might look like this:
 
-{"earth":
- {"age":"4,540,000,000yrs",
- "moons":"1",
- "neighbors":
-   {"mars":{},
-     "venus":{}},
- "population":"6,973,738,433",
-"radius":"6.371km"}}"
+    {"earth":
+     {"age":"4,540,000,000yrs",
+     "moons":"1",
+     "neighbors":
+       {"mars":{},
+         "venus":{}},
+     "population":"6,973,738,433",
+    "radius":"6.371km"}}"
 
 In both examples, this object has a property "moons" that has a value of "1", and has a property population that has a value of "6,973,738,433". In Javascript, I could access the population property like this:
 
-> earth.population
+    earth.population
 
 Notice that while the behavior is close to identical, the Note encoding is much simpler, cleaner, and durable than the JSON encoding.
 
@@ -59,14 +59,14 @@ More Examples
 
 ## Basic Example
 
-email john@doe.com
+    email john@doe.com
 
 In the Note object above, "email" is a name, and "john@doe.com" is the corresponding value.
 
 ## A Note object with multiple pairs
 
-email john@doe.com
-gender male
+    email john@doe.com
+    gender male
 
 In the Note object above,  "email" and "gender" are names, and "john@doe.com" and "male" are the corresponding values.
 
@@ -74,27 +74,27 @@ You can set values as strings like in the examples above, or you can set values 
 
 ## Nested Note
 
-email john@doe.com
-gender male
-phone_numbers
- home 555-5555
- cell 444-4444
+    email john@doe.com
+    gender male
+    phone_numbers
+     home 555-5555
+     cell 444-4444
 
 In this example, the value of phone_numbers is itself another Note object.
 
 ## Multiline strings
 
-email john@doe.com
-gender male
-phone_numbers
- home 555-5555
- cell 444-4444
-biography 
- This is my bio.
- It it written on multiple lines.
- There is a space after biography above, which instructs the code that this is
- a multiline string, and not a nested Note object.
- The end.
+    email john@doe.com
+    gender male
+    phone_numbers
+     home 555-5555
+     cell 444-4444
+    biography 
+     This is my bio.
+     It it written on multiple lines.
+     There is a space after biography above, which instructs the code that this is
+     a multiline string, and not a nested Note object.
+     The end.
  
 Values can be multiline strings by adding a space after the name (in this case "biography") and indenting the additional lines by one space.
 
@@ -103,15 +103,15 @@ Very Basic Usage with Javascript in the Browser
 
 1. Include the note.min.js class:
 
-<script type="text/javascript" src="note.min.js"></src>
+    <script type="text/javascript" src="note.min.js"></src>
 
 2. Write some code:
-<script type="text/javascript">
-  var note = new Note()
-  note.name = "Breck"
-  note.gender = "male"
-  alert(note.toString())
-</script>
+    <script type="text/javascript">
+      var note = new Note()
+      note.name = "Breck"
+      note.gender = "male"
+      alert(note.toString())
+    </script>
 
 3. Run in your browser.
 
@@ -140,32 +140,30 @@ Limitations
 
 This object, with spaces in the name, cannot be represented in Note:
 
-{
-  "This name has a space" : "value"
-}
+    { "This name has a space" : "value" }
 
 To get around this you could rename the name, or use camelCasing or underscores instead of spaces.
 
 ## Order is not important in Note.
 
-winners
- joe
- bob
- sam
+    winners
+     joe
+     bob
+     sam
 
 is equivalent to
 
-winners
- bob
- joe
- sam
+    winners
+     bob
+     joe
+     sam
 
 If order is important for your application, you must specify the numbers:
 
-winners
- 1 joe
- 2 bob
- 3 sam
+    winners
+     1 joe
+     2 bob
+     3 sam
 
 The reason for this decision was to ensure that the difference between 2 notes is itself note.
 
