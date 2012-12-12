@@ -57,13 +57,13 @@ Note does not care what programming language you use. Although the implementatio
 More Examples
 -------------
 
-## Basic Example
+### Basic Example
 
     email john@doe.com
 
 In the Note object above, "email" is a name, and "john@doe.com" is the corresponding value.
 
-## A Note object with multiple pairs
+### A Note object with multiple pairs
 
     email john@doe.com
     gender male
@@ -72,7 +72,7 @@ In the Note object above,  "email" and "gender" are names, and "john@doe.com" an
 
 You can set values as strings like in the examples above, or you can set values to be nested Note objects by putting a newline immediately after the name and by indenting each item in the nested Note object by 1 space.
 
-## Nested Note
+### Nested Note
 
     email john@doe.com
     gender male
@@ -82,7 +82,7 @@ You can set values as strings like in the examples above, or you can set values 
 
 In this example, the value of phone_numbers is itself another Note object.
 
-## Multiline strings
+### Multiline strings
 
     email john@doe.com
     gender male
@@ -103,15 +103,15 @@ Very Basic Usage with Javascript in the Browser
 
 1. Include the note.min.js class:
 
-    <script type="text/javascript" src="note.min.js"></src>
+    <code><script type="text/javascript" src="note.min.js"></src><code>
 
 2. Write some code:
-    <script type="text/javascript">
+    <code><script type="text/javascript">
       var note = new Note()
       note.name = "Breck"
       note.gender = "male"
       alert(note.toString())
-    </script>
+    </script><code>
 
 3. Run in your browser.
 
@@ -136,7 +136,7 @@ We've built an encoding on top of Note called Blocks, that works as powerful tem
 Limitations
 -----------
 
-## You cannot have spaces in names.
+### You cannot have spaces in names.
 
 This object, with spaces in the name, cannot be represented in Note:
 
@@ -144,7 +144,7 @@ This object, with spaces in the name, cannot be represented in Note:
 
 To get around this you could rename the name, or use camelCasing or underscores instead of spaces.
 
-## Order is not important in Note.
+### Order is not important in Note.
 
     winners
      joe
