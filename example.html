@@ -1,0 +1,50 @@
+<!doctype>
+<html>
+  <head>
+    <script type="text/javascript" src="tests/jquery-1.8.0.min.js"></script>
+    <script type="text/javascript" src="note.min.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function() {
+      $('button').on('click', function () {
+        var note = new Note($('textarea').val())
+        $('#json').text(note.to_json())
+      })
+    })
+    </script>
+    <style>
+    body {
+      font-family: Arial;
+    }
+    textarea {
+      width: 400px;
+      height: 300px;
+    }
+    #json {
+      width: 400px;
+    }
+    </style>
+  </head>
+  <body>
+    <h1>Note example</h1>
+<textarea>ben
+ age 29
+lees
+ age 58
+alex
+ age 28
+erin
+ age 30
+conor
+ age 32
+mairi
+ age 23
+jack
+ age 60
+breck
+ age 28
+</textarea>
+<br>
+<button>To JSON</button>
+<div id="json"></div>
+  </body>
+</html>

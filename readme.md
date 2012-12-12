@@ -101,23 +101,7 @@ Values can be multiline strings by adding a space after the name (in this case "
 Very Basic Usage with Javascript in the Browser
 -----------------------------------------------
 
-1. Include the note.min.js class:
-
-<code>
-<script type="text/javascript" src="note.min.js"></src>
-</code>
-
-2. Write some code:
-<code>
-<script type="text/javascript">
-  var note = new Note()
-  note.name = "Breck"
-  note.gender = "male"
-  alert(note.toString())
-</script>
-</code>
-
-3. Run in your browser.
+Open example.html for a very basic usage example.
 
 
 Some Neat Properties
