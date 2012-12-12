@@ -103,15 +103,19 @@ Very Basic Usage with Javascript in the Browser
 
 1. Include the note.min.js class:
 
-<code><script type="text/javascript" src="note.min.js"></src><code>
+<code>
+<script type="text/javascript" src="note.min.js"></src>
+</code>
 
 2. Write some code:
-<code><script type="text/javascript">
+<code>
+<script type="text/javascript">
   var note = new Note()
   note.name = "Breck"
   note.gender = "male"
   alert(note.toString())
-</script><code>
+</script>
+</code>
 
 3. Run in your browser.
 
