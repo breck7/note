@@ -1,48 +1,68 @@
 Note
 ====
 
-Note is a simple language, designed for both humans and programmers, that makes it easy to read, write, edit, and share objects.
+Note is a structured, human readable, concise language for encoding data.
+
+Note is designed to make it easy for both humans and programmers to read, write, edit, and share objects.
 
 Example
 -------
 
 Here's how I could encode an object named Earth:
 
-    earth
+    Earth
      age 4,540,000,000yrs
      moons 1
      neighbors
-      mars
-      venus
+      Mars
+      Venus
      population 6,973,738,433
      radius 6.371km
 
-This same object, written in the current dominant object notation, JSON, might look like this:
+Structure
+---------
 
-    {"earth":
+Note uses whitespace to give the data structure. The space between age and 4,540,000,000yrs tells the computer that the age of this earth object equals 4,540,000,000yrs. Because Mars is indented past neighbors, we know that Mars is a member of the neighbors object.
+
+Human Readable
+--------------
+
+Note has no syntax characters other than whitespace to make it as easy to read and edit as possible. Unlike other languages such as XML or JSON, Note is designed to be easy for beginner programmers and complete laypersons to read and edit.
+
+Concise
+-------
+
+Note has a very carefully selected feature set in order to be extremely useful and extremely simple. There are no syntax characters other than whitespace, no types other than strings and nested notes, and Note uses the smallest amount of whitespace possible to establish structure. Unlike other whitespace languages which use 2-4 spaces (or the tab character), Note only uses a single space to indent an item or a single newline to seperate key/value pairs.
+
+
+Using Note with Javascript
+--------------------------
+
+The first implementation of Note, included in this repo, is in Javascript. Note is very similar to JSON. You could write the Earth object above in JSON like this:
+
+    {"Earth":
      {"age":"4,540,000,000yrs",
      "moons":"1",
      "neighbors":
-       {"mars":{},
-         "venus":{}},
+       {"Mars":{},
+         "Venus":{}},
      "population":"6,973,738,433",
     "radius":"6.371km"}}"
 
-In both examples, this object has a property "moons" that has a value of "1", and has a property population that has a value of "6,973,738,433". In Javascript, I could access the population property like this:
+In both encodings, this object has a property "moons" that has a value of "1", and has a property population that has a value of "6,973,738,433". In both encodings, I could access the population property like this:
 
     earth.population
 
-Notice that while the behavior is close to identical, the Note encoding is much simpler, cleaner, and durable than the JSON encoding.
 
-How it Works
-------------
+The Spec
+--------
 
 Note has just a few rules involving spaces and new lines that makes the whole thing work. Note has two, and only 2, special characters:
 
 1. The Space Character.
 2. The New Line Character.
 
-A Note object is simply a list of name/value pairs. A single space character(" ") separates the name and value. A new line separates pairs. Names are always strings. Names can contain any character except space or newline. Values can be either strings or Note objects and can contain any character.
+A Note object is simply a list of name/value pairs. A single space character(" ") separates the name and value. A new line separates pairs. Names are always strings. Names can contain any character except space or newline. Values can be either strings or nested Note objects and can contain any character.
 
 Use Cases
 ---------
@@ -89,8 +109,7 @@ In this example, the value of phone_numbers is itself another Note object.
     phone_numbers
      home 555-5555
      cell 444-4444
-    biography 
-     This is my bio.
+    biography This is my bio.
      It it written on multiple lines.
      There is a space after biography above, which instructs the code that this is
      a multiline string, and not a nested Note object.
@@ -98,26 +117,40 @@ In this example, the value of phone_numbers is itself another Note object.
  
 Values can be multiline strings by adding a space after the name (in this case "biography") and indenting the additional lines by one space.
 
-Very Basic Usage with Javascript in the Browser
------------------------------------------------
+Examples
+--------
 
-Open example.html for a very basic usage example.
+- Visit http://noteapi.com to play with some popular APIs using Note.
+- Open example.html for a very basic usage example.
 
 
 Some Neat Properties
 --------------------
 
 - Besides spaces and new lines, there are no syntax characters in Note.
-- The difference between 2 notes is a note.
+- The difference between two notes is a note.
 - There is no such thing as a syntax error in Note.
 
 
 Extending Note
 --------------
 
-Although Note has no types and very few features, you can easily build encodings on top of Note that do have types and additional features.
+Although Note has no types and very few features, you can easily build encodings on top of Note that do have types and additional features. Although Note requires that all leaves be strings or nested notes, your extension can expect a leaf to follow a certain encoding (ie: HTML, JSON, Markdown, Base64, et cetera.).
 
-For example, you could build a class called Person, that extends note, and expects age to be an integer.
+For example, you could build a class called Person, that extends note, and expects a JSON encoded array for the favorite_colors property.
+
+    function Person (note) {
+      this.patch(note)
+      if (this.favorite_colors)
+       this.favorite_colors = JSON.parse(this.favorite_colors)
+    }
+    Person.prototype = new Note()
+    
+    var joe = new Person('favorite_colors ["blue", "red", "green"]')
+    console.log(joe.favorite_colors[0])
+    // prints "blue"
+    console.log(joe.favorite_colors[2])
+    // prints "green"
 
 We've built an encoding on top of Note called Blocks, that works as powerful template language for HTML. We've also built an encoding that can turn a full filesystem into Note and vice versa, using base64 encoding of binary data.
 
@@ -138,8 +171,8 @@ Support
 
 Feel free to contact me at breck7@gmail.com for help using or extending Note.
 
-Limitations
------------
+Current Limitations
+-------------------
 
 ### You cannot have spaces in names.
 
@@ -170,7 +203,12 @@ If order is important for your application, you must specify the numbers:
      2 bob
      3 sam
 
-The reason for this decision was to ensure that the difference between 2 notes is itself note.
+OR you can make your code expect a leaf node to contain a string encoded type:
+
+    winners joe bob sam
+    winners ['joe', 'bob', 'sam]
+
+The reason for making order unimportant in Note was to ensure that the difference between 2 notes is itself note.
 
 
 Influences
