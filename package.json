@@ -4,7 +4,7 @@
   "description": "A simple notation for objects.",
   "main": "./Note.js",
   "scripts": {
-    "test": "qunit -c ./Note.js -t ./tests/unit/Note.js"
+    "test": "node tests/node-index.js"
   },
   "repository": {
     "type": "git",

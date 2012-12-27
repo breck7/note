@@ -1,6 +1,4 @@
-// Export Note for use in Node.js
-if (typeof exports != 'undefined')
-  var Note = require('note')
+
 
 QUnit.module('Note')
 
