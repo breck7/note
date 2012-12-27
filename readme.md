@@ -179,6 +179,11 @@ Contributing
 
 If you'd like to contribute please contact me at breck7@gmail.com.
 
+Testing
+-------
+
+[![Build Status](https://travis-ci.org/breck7/note.png?branch=master)](https://travis-ci.org/breck7/note)
+
 Support
 -------
 
