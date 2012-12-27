@@ -69,6 +69,19 @@ Use Cases
 
 Note is **great** for web APIs. Anywhere JSON or XML is used, Note is probably a better choice. Note is very similar to JSON without the syntax and without the types.
 
+Diff and Patch
+--------------
+
+One of the primary design goals of Note was to create an encoding that makes diffing and patching easy. With Note, it couldn't be easier:
+
+    // Note
+    email john@doe.com
+    gender male
+    phone_numbers
+     home 555-5555
+     
+    
+
 Programming Languages
 ---------------------
 
