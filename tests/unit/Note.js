@@ -1,4 +1,8 @@
-module('Note')
+// Export Note for use in Node.js
+if (typeof exports != 'undefined')
+  var Note = require('note')
+
+QUnit.module('Note')
 
 test('Note', function() {
   ok(Note, 'Note class should exist')
@@ -299,6 +303,7 @@ test('last_name', function() {
 test('leaves', function() {
 
   var a = new Note('hello world\naloha hawaii')
+  ok(a instanceof Note)
   equal(a.leaves(), 2)
 
 })
@@ -360,23 +365,6 @@ test('notes', function() {
   var a = new Note('hello world\naloha hawaii\nsome\n nested\n  note boom')
   equal(a.notes(), 2)
 
-})
-
-test('on', function() {
-
-  var a = new Note('maine me\nnew_york nyc')
-  window.foobar = 1
-  equal(a.length(), 2)
-  ok(a.on('change', function (patch) {
-    console.log('patch fired')
-    window.foobar++
-    equal(patch.length(), 1)
-  }) instanceof Note, 'should be chainable')
-  equal(a.length(), 2)
-  a.patch('maine ME')
-  a.patch('maine Me')
-  equal(window.foobar, 3, 'foobar should be incremented twice')
-  
 })
 
 test('patch', function() {
@@ -537,9 +525,27 @@ test('sort_by_name', function() {
 
 })
 
+var sort_by_property = 'ben\n\
+ age 29\n\
+lees\n\
+ age 58\n\
+alex\n\
+ age 28\n\
+erin\n\
+ age 30\n\
+conor\n\
+ age 32\n\
+mairi\n\
+ age 23\n\
+jack\n\
+ age 60\n\
+breck\n\
+ age 28\n\
+'
+
 test('sort_by_property', function() {
   
-  var note = new Note($('#sort_by_property').text())
+  var note = new Note(sort_by_property)
   equal(note.length(), 8, 'downloaded okay')
   var order = ''
   for (var i in note.names()) {
@@ -547,6 +553,8 @@ test('sort_by_property', function() {
   }
   equal(order, 'benleesalexerinconormairijackbreck', 'order as set')
   order = ''
+  ok(note.sort_by_property, 'sort by property method exists')
+  ok(note instanceof Note, 'note is correct instance type')
   for (var i in note.sort_by_property('age').names()) {
     order += i
   }
