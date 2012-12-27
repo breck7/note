@@ -16,6 +16,9 @@
     "json",
     "xml"
   ],
+  "devDependencies": {
+    "qunit": "~0.5.1"
+  },
   "author": "Breck Yunits, Ben Zulauf",
   "license": "MIT"
 }
