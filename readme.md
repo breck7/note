@@ -80,7 +80,17 @@ One of the primary design goals of Note was to create an encoding that makes dif
     phone_numbers
      home 555-5555
      
+    // Patch
+    phone_numbers
+     cell 123-1234
     
+    // Patched
+    email john@doe.com
+    gender male
+    phone_numbers
+     home 555-5555
+     cell 123-1234
+
 
 Programming Languages
 ---------------------
@@ -234,5 +244,9 @@ Influences
 
 Note was inspired by JSON and HAML, and our desire for a simpler, more universal object encoding with less syntax.
 
+Acronym
+-------
+
+What would an encoding be without an acronym? Note stands for Neat Object Text Encoding.
 
 

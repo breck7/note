@@ -1,7 +1,7 @@
 {
   "name": "note",
   "version": "1.1.0",
-  "description": "A simple notation for objects.",
+  "description": "A neater encoding for objects.",
   "main": "./Note.js",
   "scripts": {
     "test": "node tests/node-index.js"
