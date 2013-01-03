@@ -57,6 +57,8 @@ In both encodings, this object has a property "moons" that has a value of "1", a
 The Spec
 --------
 
+Note has 2 data structures: hash tables and strings. A Note is a recursive hash table.
+
 Note has just a few rules involving spaces and new lines that makes the whole thing work. Note has two, and only 2, special characters:
 
 1. The Space Character.
