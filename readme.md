@@ -34,7 +34,6 @@ Concise
 
 Note has a very carefully selected feature set in order to be extremely useful and extremely simple. There are no syntax characters other than whitespace, no types other than strings and nested notes, and Note uses the smallest amount of whitespace possible to establish structure. Unlike other whitespace languages which use 2-4 spaces (or the tab character), Note only uses a single space to indent an item or a single newline to seperate key/value pairs.
 
-
 Using Note with Javascript
 --------------------------
 
@@ -53,13 +52,12 @@ In both encodings, this object has a property "moons" that has a value of "1", a
 
     earth.population
 
+Technical Spec
+--------------
 
-The Spec
---------
+**Data Structures**. Note is a serialization format for recursive hash tables. Note uses 2 data structures: hash tables and strings.
 
-Note has 2 data structures: hash tables and strings. A Note is a recursive hash table.
-
-Note has just a few rules involving spaces and new lines that makes the whole thing work. Note has two, and only 2, special characters:
+**Syntax Characters**. Note has two special characters:
 
 1. The Space Character.
 2. The New Line Character.
@@ -70,6 +68,8 @@ Use Cases
 ---------
 
 Note is **great** for web APIs. Anywhere JSON or XML is used, Note is probably a better choice. Note is very similar to JSON without the syntax and without the types.
+
+Note is meant to be extended. You can easily build domain specific encodings on top of Note that have more syntax characters and rules, yet adhere to the Note spec to retain the benefits of Note.
 
 Diff and Patch
 --------------
@@ -148,14 +148,12 @@ Examples
 - Visit http://noteapi.com to play with some popular APIs using Note.
 - Open example.html for a very basic usage example.
 
-
 Some Neat Properties
 --------------------
 
 - Besides spaces and new lines, there are no syntax characters in Note.
 - The difference between two notes is a note.
 - There is no such thing as a syntax error in Note.
-
 
 Extending Note
 --------------
@@ -214,6 +212,8 @@ To get around this you could rename the name, or use camelCasing or underscores 
 
 ### Order is not important in Note.
 
+A Note is a hash table and not an array, and so:
+
     winners
      joe
      bob
@@ -233,22 +233,20 @@ If order is important for your application, you must specify the numbers:
      2 bob
      3 sam
 
-OR you can make your code expect a leaf node to contain a string encoded type:
+OR you can make your code expect a leaf node to contain an array type:
 
     winners joe bob sam
     winners ['joe', 'bob', 'sam]
-
-The reason for making order unimportant in Note was to ensure that the difference between 2 notes is itself note.
 
 
 Influences
 ----------
 
-Note was inspired by JSON and HAML, and our desire for a simpler, more universal object encoding with less syntax.
+Note was inspired mostly by JSON and HAML, a bit by XML and YAML, and our personal desire for a simple, powerful encoding with less syntax.
 
 Acronym
 -------
 
-What would an encoding be without an acronym? Note stands for Neat Object Text Encoding.
+What would an encoding be without an acronym? Note stands for Neat Object Text Encoding. Although to be more specific, Note would be Neat Hash Tables Text Encoding.
 
 
