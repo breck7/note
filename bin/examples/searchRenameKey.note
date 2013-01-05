@@ -1,7 +1,0 @@
-action search
-path test/
-recursive true
-query some nested value
-newKey some nested value2
-extension note
-outputFilepath output.note

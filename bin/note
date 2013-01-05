@@ -46,6 +46,7 @@ var searchDirectory = function (path, command) {
 
   var extension = command.extension || 'note'
   var filenameRegex =  new RegExp('\.' + extension + '$', 'i')
+  var searchRegex = new RegExp(command.query, 'g')
 
   // recursively find all files that match path
   var files = fs.readdirSync(path)
@@ -64,8 +65,17 @@ var searchDirectory = function (path, command) {
       continue
     
     var file = fs.readFileSync(path + filename, 'utf8')
-    var note = new Note(file)
     
+    if (command.fullText) {
+      var match = file.match(searchRegex)
+      if (!match)
+        continue
+      
+      output[path + filename] = new Note(match)
+      continue
+    }
+    
+    var note = new Note(file)
     
     if (!note.get(command.query))
       continue
@@ -73,10 +83,10 @@ var searchDirectory = function (path, command) {
     // Match :)
     output[path + filename] = note.get(command.query)
     
-    // Replace key
-    if (command.newKey) {
-      note.set(command.newKey, note.get(command.query))
-      note.set(command.query, '')
+    if (command.modify) {
+      var match
+      eval('match = function (note) { ' + command.modify + '; return note }')
+      note = match(note)
       fs.writeFileSync(path + filename, note.toString(), 'utf8')
     }
     
