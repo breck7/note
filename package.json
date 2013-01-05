@@ -1,6 +1,6 @@
 {
   "name": "note",
-  "version": "1.1.0",
+  "version": "1.1.32",
   "description": "A neater encoding for objects.",
   "main": "./Note.js",
   "scripts": {
@@ -16,6 +16,9 @@
     "json",
     "xml"
   ],
+  "bin": {
+    "note": "./bin/note"
+  },
   "devDependencies": {
     "qunit": "~0.5.1"
   },

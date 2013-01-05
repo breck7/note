@@ -1,0 +1,117 @@
+#!/usr/bin/env node
+
+var fs = require("fs"),
+    exec = require('child_process').exec,
+    os = require('os'),
+    Note = require("note")
+
+var command
+var output = new Note()
+var outputFilepath = 'output.note'
+var inputFilename
+
+var args = process.argv.slice(2)
+if (args.length < 1) {
+  console.log('No filename provided. Usage: note command.note')
+  process.exit(1)
+}
+inputFilename = args[0]
+
+
+// Direct Command
+if (!inputFilename.match(/ /)) {
+  if (!fs.existsSync(inputFilename)) {
+    console.log('File ' + inputFilename + ' does not exist.')
+    process.exit(1)
+  }
+
+  var file = fs.readFileSync(inputFilename, 'utf8')
+
+  command = new Note(file)  
+} else {
+  command = new Note(args[0])
+}
+
+if (command.outputFilepath)
+  outputFilepath = command.outputFilepath
+
+if (!command.action) {
+  console.log('No action provided')
+  process.exit(1)
+}
+
+var commands = {}
+
+var searchDirectory = function (path, command) {
+
+  var extension = command.extension || 'note'
+  var filenameRegex =  new RegExp('\.' + extension + '$', 'i')
+
+  // recursively find all files that match path
+  var files = fs.readdirSync(path)
+  for (var i in files) {
+  
+    var filename = files[i]
+    
+    if (command.recursive === 'true') {
+      if (fs.statSync(path + filename).isDirectory()) {
+        searchDirectory(path + filename + '/', command)
+        continue
+      }
+    }
+    
+    if (!filename.match(filenameRegex))
+      continue
+    
+    var file = fs.readFileSync(path + filename, 'utf8')
+    var note = new Note(file)
+    
+    
+    if (!note.get(command.query))
+      continue
+    
+    // Match :)
+    output[path + filename] = note.get(command.query)
+    
+    // Replace key
+    if (command.newKey) {
+      note.set(command.newKey, note.get(command.query))
+      note.set(command.query, '')
+      fs.writeFileSync(path + filename, note.toString(), 'utf8')
+    }
+    
+  }
+}
+
+commands.search = function (command) {
+  console.log('searching')
+  
+  if (!command.path) {
+    console.log('Provide a path.')
+    process.exit(1)
+  }
+  
+  if (!command.query) {
+    console.log('Provide a query.')
+    process.exit(1)
+  }
+  
+  if (!fs.existsSync(command.path)) {
+    console.log('Path ' + command.path + ' does not exist.')
+    process.exit(1)
+  }
+  
+  // recursively find all files that match path
+  searchDirectory(command.path, command)
+  
+}
+
+if (!commands[command.action]) {
+  console.log('No action provided')
+  process.exit(1)
+}
+
+commands[command.action](command)
+fs.writeFileSync(outputFilepath, output.toString(), 'utf8')
+console.log(output.toString())
+process.exit(0)

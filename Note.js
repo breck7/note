@@ -605,10 +605,11 @@ Note.prototype.retrieve = function (note) {
 Note.prototype.set = function (query, value) {
   var parts = query.split(/ /g)
   var patch = new Note()
+  var edge = patch
   for (var i = 0; i < parts.length - 1; i++) {
-    patch[parts[i]] = new Note()
+    edge = edge[parts[i]] = new Note()
   }
-  patch[parts[i]] = value
+  edge[parts[i]] = value
   this.patch(patch)
   this.trigger('change')
   return this

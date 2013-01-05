@@ -495,6 +495,9 @@ test('set', function() {
   equal(value.get('hello'), 'world')
   ok(value.set('hello', 'mom') instanceof Note, 'set should return instance so we can chain it')
   equal(value.get('hello'), 'mom', 'value should be changed')
+  value.set('head style color', 'blue')
+  debugger
+  equal(value.get('head style color'), 'blue', 'set should have worked')
 
 })
 
