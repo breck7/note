@@ -1,14 +1,14 @@
 Note
 ====
 
-Note is a structured, human readable, concise language for encoding data.
+Note is a concise encoding for hash tables.
 
-Note is designed to make it easy for both humans and programmers to read, write, edit, and share objects.
+Note is designed to make it easy for both humans and programmers to read, write, edit, and share hash tables.
 
 Example
 -------
 
-Here's how I could encode an object named Earth:
+Here's how I could encode a hash table named Earth:
 
     Earth
      age 4,540,000,000yrs
@@ -19,38 +19,15 @@ Here's how I could encode an object named Earth:
      population 6,973,738,433
      radius 6.371km
 
-Structure
----------
+Design Goals
+------------
 
-Note uses whitespace to give the data structure. The space between age and 4,540,000,000yrs tells the computer that the age of this earth object equals 4,540,000,000yrs. Because Mars is indented past neighbors, we know that Mars is a member of the neighbors object.
+**Human Readable**. Note has no syntax characters other than whitespace to make it as easy to read and edit as possible. Unlike other languages such as XML or JSON, Note is designed to be easy for beginner programmers and complete laypersons to read and edit.
 
-Human Readable
---------------
+**Concise**. Note has a very carefully selected feature set in order to be extremely useful and extremely simple. There are no syntax characters other than whitespace, no types other than strings and nested hash tables, and Note uses the smallest amount of whitespace possible to establish structure. Unlike other whitespace languages which use 2-4 spaces (or the tab character), Note only uses a single space to indent an item or a single newline to seperate key/value pairs.
 
-Note has no syntax characters other than whitespace to make it as easy to read and edit as possible. Unlike other languages such as XML or JSON, Note is designed to be easy for beginner programmers and complete laypersons to read and edit.
+**Extendable**. Note is useful to solve many problems as is. However, Note is designed to be extendable. Although Note has no types other than hash tables and strings, you can build Domain Specific Languages on top of Note that expect other types as encoded strings.
 
-Concise
--------
-
-Note has a very carefully selected feature set in order to be extremely useful and extremely simple. There are no syntax characters other than whitespace, no types other than strings and nested notes, and Note uses the smallest amount of whitespace possible to establish structure. Unlike other whitespace languages which use 2-4 spaces (or the tab character), Note only uses a single space to indent an item or a single newline to seperate key/value pairs.
-
-Using Note with Javascript
---------------------------
-
-The first implementation of Note, included in this repo, is in Javascript. Note is very similar to JSON. You could write the Earth object above in JSON like this:
-
-    {"Earth":
-     {"age":"4,540,000,000yrs",
-     "moons":"1",
-     "neighbors":
-       {"Mars":{},
-         "Venus":{}},
-     "population":"6,973,738,433",
-    "radius":"6.371km"}}"
-
-In both encodings, this object has a property "moons" that has a value of "1", and has a property population that has a value of "6,973,738,433". In both encodings, I could access the population property like this:
-
-    earth.population
 
 Technical Spec
 --------------
@@ -62,36 +39,7 @@ Technical Spec
 1. The Space Character.
 2. The New Line Character.
 
-A Note object is simply a list of name/value pairs. A single space character(" ") separates the name and value. A new line separates pairs. Names are always strings. Names can contain any character except space or newline. Values can be either strings or nested Note objects and can contain any character.
-
-Use Cases
----------
-
-Note is **great** for web APIs. Anywhere JSON or XML is used, Note is probably a better choice. Note is very similar to JSON without the syntax and without the types.
-
-Note is meant to be extended. You can easily build domain specific encodings on top of Note that have more syntax characters and rules, yet adhere to the Note spec to retain the benefits of Note.
-
-Diff and Patch
---------------
-
-One of the primary design goals of Note was to create an encoding that makes diffing and patching easy. With Note, it couldn't be easier:
-
-    // Note
-    email john@doe.com
-    gender male
-    phone_numbers
-     home 555-5555
-     
-    // Patch
-    phone_numbers
-     cell 123-1234
-    
-    // Patched
-    email john@doe.com
-    gender male
-    phone_numbers
-     home 555-5555
-     cell 123-1234
+A Note object is simply a hash table. A single space character(" ") separates a name with its value. A new line separates pairs. Names are always strings. Names can contain any character except space or newline. Values can be either strings or nested Note objects and can contain any character. A newline plus indented space indicates a nested hash table.
 
 
 Programming Languages
@@ -148,17 +96,10 @@ Examples
 - Visit http://noteapi.com to play with some popular APIs using Note.
 - Open example.html for a very basic usage example.
 
-Some Neat Properties
---------------------
-
-- Besides spaces and new lines, there are no syntax characters in Note.
-- The difference between two notes is a note.
-- There is no such thing as a syntax error in Note.
-
 Extending Note
 --------------
 
-Although Note has no types and very few features, you can easily build encodings on top of Note that do have types and additional features. Although Note requires that all leaves be strings or nested notes, your extension can expect a leaf to follow a certain encoding (ie: HTML, JSON, Markdown, Base64, et cetera.).
+Although Note has no types and very few features, you can easily build encodings on top of Note that do have types and additional features. Your extension can expect a leaf to follow a certain encoding (ie: HTML, JSON, CSV, Markdown, Base64, et cetera.).
 
 For example, you could build a class called Person, that extends note, and expects a JSON encoded array for the favorite_colors property.
 
@@ -175,14 +116,12 @@ For example, you could build a class called Person, that extends note, and expec
     console.log(joe.favorite_colors[2])
     // prints "green"
 
-We've built an encoding on top of Note called Blocks, that works as powerful template language for HTML. We've also built an encoding that can turn a full filesystem into Note and vice versa, using base64 encoding of binary data.
-
 Javascript API
 --------------
 
 The Javascript library in this repo works in both the browser and with Node.js.
 
-The API is still somewhat in flux, but there are many neat methods such as diff, patch, and toString that demonstrate the power of Note.
+The API is still somewhat in flux, but there are many neat methods such as diff, patch, and toString that demonstrate some neat features of Note.
 
 Contributing
 ------------
@@ -237,16 +176,12 @@ OR you can make your code expect a leaf node to contain an array type:
 
     winners joe bob sam
     winners ['joe', 'bob', 'sam]
+    winners joe,bob,sam
 
 
 Influences
 ----------
 
 Note was inspired mostly by JSON and HAML, a bit by XML and YAML, and our personal desire for a simple, powerful encoding with less syntax.
-
-Acronym
--------
-
-What would an encoding be without an acronym? Note stands for Neat Object Text Encoding. Although to be more specific, Note would be Neat Hash Tables Text Encoding.
 
 
