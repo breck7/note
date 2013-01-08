@@ -22,11 +22,11 @@ Here's how I could encode a hash table named Earth:
 Design Goals
 ------------
 
-**Human Readable**. Note has no syntax characters other than whitespace to make it as easy to read and edit as possible. Unlike other languages such as XML or JSON, Note is designed to be easy for beginner programmers and complete laypersons to read and edit.
+**Human Readable**. Note has no syntax characters other than whitespace to make it easy to read and edit. Unlike other languages such as XML or JSON, Note is designed to be easy for beginner programmers and complete laypersons to read and edit.
 
-**Concise**. Note has a very carefully selected feature set in order to be extremely useful and extremely simple. There are no syntax characters other than whitespace, no types other than strings and nested hash tables, and Note uses the smallest amount of whitespace possible to establish structure. Unlike other whitespace languages which use 2-4 spaces (or the tab character), Note only uses a single space to indent an item or a single newline to seperate key/value pairs.
+**Concise**. Note has just a few features to make it simple and broadly usable. There are no syntax characters other than whitespace, no types other than strings and nested hash tables, and Note uses the smallest amount of whitespace possible to establish structure. Unlike other whitespace languages which use 2-4 spaces (or the tab character), Note only uses a single space to indent an item or a single newline to seperate key/value pairs.
 
-**Extendable**. Note is useful to solve many problems as is. However, Note is designed to be extendable. Although Note has no types other than hash tables and strings, you can build Domain Specific Languages on top of Note that expect other types as encoded strings.
+**Extendable**. Note is useful to solve many problems as is. However, Note is designed to be extendable. Although Note has no types other than hash tables and strings, you can build domain specific languages on top of Note that expect other types as encoded strings. Example: https://github.com/breck7/blocks
 
 
 Technical Spec
@@ -45,7 +45,7 @@ A Note object is simply a hash table. A single space character(" ") separates a 
 Programming Languages
 ---------------------
 
-Note does not care what programming language you use. Although the implementation of Note included here is built in Javascript, Note can be read, written, and modified easily with any programming language. In fact, one of the main benefits of Note is that it can be used by many programs, with many different languages, and they can all easily share data using Note.
+Note does not care what programming language you use. Although the implementation of Note included here is built in Javascript, Note can be read, written, and modified easily with any programming language. In fact, one of the main benefits of Note is that it can be used by many programs, with many different languages, and they can all easily share hash tables using Note.
 
 More Examples
 -------------
@@ -94,7 +94,7 @@ Examples
 --------
 
 - Visit http://noteapi.com to play with some popular APIs using Note.
-- Open example.html for a very basic usage example.
+- See https://github.com/breck7/blocks for an example of a higher level encoding built on Note.
 
 Extending Note
 --------------
