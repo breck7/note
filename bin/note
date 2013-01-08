@@ -93,6 +93,14 @@ var searchDirectory = function (path, command) {
   }
 }
 
+commands.perl = function (command) {
+  exec(
+  'perl -e "s|' + command.search +
+  '|' + command.replace +
+  '|g;" -pi $(find ' +
+  command.path + ' -type f)')
+}
+
 commands.search = function (command) {
   console.log('searching')
   
