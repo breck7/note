@@ -1,5 +1,3 @@
-
-
 QUnit.module('Note')
 
 test('Note', function() {
@@ -59,24 +57,6 @@ domains\n\
 
 })
 
-test('bytes', function() {
-
-  var a = new Note('john\n age 5')
-  equal(a.to_string().length, 12)
-
-  a.john.age = 45
-  equal(a.to_string().length, 13)
-
-  var b = new Note('')
-  equal(b.to_string().length, 0)
-
-  var c = new Note('   h 1')
-  equal(c.to_string().length, 4)
-
-  var d = new Note('   h 1\n\n\n\n')
-  equal(c.to_string().length, 4)
-
-})
 
 test('clear', function() {
   var a = new Note('hello world')
@@ -138,8 +118,8 @@ test('diff', function() {
   var c = new Note('first John')
 
   
-  equal(a.diff(b).to_string(), 'hello mom\n')
-  equal(a.diff(c).to_string(), 'hello\nfirst John\n')
+  equal(a.diff(b).toString(), 'hello mom\n')
+  equal(a.diff(c).toString(), 'hello\nfirst John\n')
   
   equal(a.diff(c).first, 'John')
 
@@ -187,7 +167,7 @@ test('diff', function() {
   page.body['foobar'] = block
   page2.body['foobar'] = block2
   diff = page.diff(page2)
-  equal(page.to_string(), page2.to_string(), 'Pages should be equal')
+  equal(page.toString(), page2.toString(), 'Pages should be equal')
   equal(diff.length(), 0, 'Difference between 2 composites should not check privates in sub parts.')
   
   
@@ -202,107 +182,21 @@ test('diff', function() {
 
 })
 
-test('each', function() {
 
-  var a = new Note('john\n age 5\nsusy\n age 6\n')
-
-  ok(a.each(function(p, i) {
-    p.age = parseFloat(p.age) + 1
-  }) instanceof Note, 'should be chainable')
-
-  equal(a.get('john age'), '6', 'johns age shuold be icnremented')
-  equal(a.get('susy age'), '7', 'susys age should be incremented')
-})
-
-test('equals', function() {
-
-  var a = new Note('maine me\nnew_york nyc')
-  var b = new Note('maine me\nnew_york nyc\n')
-  ok(a.equals(b))
-
-  var a = new Note('maine me\nnew_york nyc\nzips\n 1 123\n 2 234')
-  var b = new Note('maine me\nnew_york nyc\n')
-  b.zips = new Note()
-  b.zips['1'] = 123
-  b.zips['2'] = 234
-  ok(a.equals(b))
-})
-
-test('escape_html', function() {
+test('escapeHtml', function() {
   var a = new Note()
-  equal(Note.escape_html('<'), '&lt;')
-  equal(Note.escape_html('<<'), '&lt;&lt;')
-  equal(Note.escape_html('>'), '&gt;')
-  equal(Note.escape_html('&'), '&amp;')
-  equal(Note.escape_html('"'), '&quot;')
-  equal(Note.escape_html('<a href="foobar">at&b</a>'), '&lt;a href=&quot;foobar&quot;&gt;at&amp;b&lt;/a&gt;')
-})
-
-test('filter', function() {
-
-  var a = new Note('john\n age 5\nsusy\n age 6\n')
-
-  var c = a.filter(function(p) {
-    return p.age > 5
-  })
-
-  equal(c.length(), 1)
-})
-
-test('first', function() {
-
-  var a = new Note('maine me\nnew_york nyc')
-  ok(a.first())
-  equal(a.first().length(), 1)
-  equal(a.first().bytes(), 9)
-  ok(a.first().equals(new Note('maine me')))
-})
-
-test('first_name', function() {
-
-  var a = new Note('maine me\nnew_york nyc')
-  ok(a.first_name())
-  equal(a.first_name(), 'maine')
+  equal(Note.escapeHtml('<'), '&lt;')
+  equal(Note.escapeHtml('<<'), '&lt;&lt;')
+  equal(Note.escapeHtml('>'), '&gt;')
+  equal(Note.escapeHtml('&'), '&amp;')
+  equal(Note.escapeHtml('"'), '&quot;')
+  equal(Note.escapeHtml('<a href="foobar">at&b</a>'), '&lt;a href=&quot;foobar&quot;&gt;at&amp;b&lt;/a&gt;')
 })
 
 test('get', function() {
 
   var value = new Note('hello world')
   equal(value.get('hello'), 'world')
-
-})
-
-test('get_float', function() {
-
-  var a = new Note('five 5')
-  a.ages = new Note()
-  a.ages.one = '1'
-  ok(a.get_float('five') === 5)
-  ok(a.get_float('ages one') === 1)
-
-})
-
-test('last', function() {
-
-  var a = new Note('maine me\nnew_york nyc')
-  ok(a.last())
-  equal(a.last().length(), 1)
-  equal(a.last().bytes(), 13)
-  ok(a.last().equals(new Note('new_york nyc')))
-})
-
-test('last_name', function() {
-
-  var a = new Note('maine me\nnew_york nyc')
-  ok(a.last_name())
-  equal(a.last_name(), 'new_york')
-})
-
-test('leaves', function() {
-
-  var a = new Note('hello world\naloha hawaii')
-  ok(a instanceof Note)
-  equal(a.leaves(), 2)
 
 })
 
@@ -317,20 +211,6 @@ test('length', function() {
   equal(a.length(), 1)
   
   
-})
-
-test('map', function() {
-
-  var a = new Note('john\n age 5\nsusy\n age 6\n')
-
-  var c = a.map(function(p) {
-    p.age = parseFloat(p.age) + 1
-  })
-
-  equal(c.get('john age'), '6')
-  equal(c.get('susy age'), '7')
-  equal(a.get('john age'), '5')
-  equal(a.get('susy age'), '6')
 })
 
 test('names', function() {
@@ -354,15 +234,6 @@ test('next', function() {
   equal(a.prev('susy'), 'john')
   equal(a.prev('bob'), 'susy')
   equal(a.next('bob'), 'john')
-})
-
-test('notes', function() {
-
-  var a = new Note('hello world\naloha hawaii')
-  equal(a.notes(), 0)
-  var a = new Note('hello world\naloha hawaii\nsome\n nested\n  note boom')
-  equal(a.notes(), 2)
-
 })
 
 test('patch', function() {
@@ -418,22 +289,6 @@ test('patch performance test', function() {
   equal(note.length(), 2000)
 })
 
-test('pluck', function() {
-
-  var a = new Note('maine me\nnew_york nyc')
-  var value = a.pluck('maine')
-  equal(a.length(), 1)
-  equal(value, 'me')
-})
-
-test('pop', function() {
-
-  var a = new Note('maine me\nnew_york nyc')
-  var value = a.pop()
-  equal(a.length(), 1)
-  equal(value, 'nyc')
-})
-
 test('prev', function() {
 
   var a = new Note('john\n age 5\nsusy\n age 6\nbob\n age 10')
@@ -445,14 +300,6 @@ test('prev', function() {
   equal(a.prev('susy'), 'john')
   equal(a.prev('bob'), 'susy')
   equal(a.next('bob'), 'john')
-})
-
-test('rest', function() {
-
-  var a = new Note('maine me\nnew_york nyc\ncali ca')
-  ok(a.rest())
-  equal(a.rest().length(), 2)
-  ok(a.rest().equals(new Note('new_york nyc\ncali ca')))
 })
 
 test('retrieve', function() {
@@ -501,15 +348,7 @@ test('set', function() {
 
 })
 
-test('shift', function() {
-
-  var a = new Note('maine me\nnew_york nyc')
-  var value = a.shift()
-  equal(a.length(), 1)
-  equal(value, 'me')
-})
-
-test('sort_by_name', function() {
+test('toSortedNote', function() {
 
   var a = new Note('hello world\naloha hawaii')
   var string = ''
@@ -518,7 +357,7 @@ test('sort_by_name', function() {
   }
   deepEqual(string, 'helloaloha', 'should not be sorted')
   string = ''
-  a = a.sort_by_name()
+  a = a.toSortedNote()
   for (var i in a.names()) {
     string += i
   }
@@ -526,7 +365,7 @@ test('sort_by_name', function() {
 
 })
 
-var sort_by_property = 'ben\n\
+var toSortedNoteBy = 'ben\n\
  age 29\n\
 lees\n\
  age 58\n\
@@ -544,9 +383,9 @@ breck\n\
  age 28\n\
 '
 
-test('sort_by_property', function() {
+test('toSortedNoteBy', function() {
   
-  var note = new Note(sort_by_property)
+  var note = new Note(toSortedNoteBy)
   equal(note.length(), 8, 'downloaded okay')
   var order = ''
   for (var i in note.names()) {
@@ -554,15 +393,15 @@ test('sort_by_property', function() {
   }
   equal(order, 'benleesalexerinconormairijackbreck', 'order as set')
   order = ''
-  ok(note.sort_by_property, 'sort by property method exists')
+  ok(note.toSortedNoteBy, 'sort by property method exists')
   ok(note instanceof Note, 'note is correct instance type')
-  for (var i in note.sort_by_property('age').names()) {
+  for (var i in note.toSortedNoteBy('age').names()) {
     order += i
   }
   equal(order, 'mairialexbreckbenerinconorleesjack', 'order sorted by age')
   
   order = ''
-  for (var i in note.sort_by_property('age', true).names()) {
+  for (var i in note.toSortedNoteBy('age', true).names()) {
     order += i
   }
   equal(order, 'jackleesconorerinbenalexbreckmairi', 'order reverse sorted by age')
@@ -570,7 +409,7 @@ test('sort_by_property', function() {
 })
 
 
-test('string_to_note', function() {
+test('loadFromString', function() {
 
   a = new Note('text \n this is a string\n and more')
 
@@ -578,61 +417,61 @@ test('string_to_note', function() {
 
   b = new Note('a\n text \n  this is a string\n  and more')
   equal(b.a.text, 'this is a string\nand more')
-  equal(b.to_string(), 'a\n text \n  this is a string\n  and more\n')
+  equal(b.toString(), 'a\n text \n  this is a string\n  and more\n')
 
   var string = 'first_name John\nlast_name Doe\nchildren\n 1\n  first_name Joe\n  last_name Doe\n  children\n   1\n    first_name Joe Jr.\n    last_name Doe\n    age 12\ncolors\n blue\n red\nbio \n Hello this is\n my multline\n biography\n \n Theres a blank line in there as well\n \n \n Two blank lines above this one.\ncode <p></p>\n'
   c = new Note(string)
   equal(c.children['1'].children['1'].age, '12')
-  equal(c.bytes(), string.length)
-  equal(c.to_string(), string)
+  equal(c.toString().length, string.length)
+  equal(c.toString(), string)
 
 })
 
-test('to_html', function() {
+test('toHtml', function() {
 
   var a = new Note('john\n age 5')
-  equal(a.to_html(), '<pre style="color: #888888;">john\n age <span style="color: #444444;">5</span>\n</pre>')
+  equal(a.toHtml(), '<pre style="color: #888888;">john\n age <span style="color: #444444;">5</span>\n</pre>')
 })
 
-test('to_javascript', function() {
+test('toJavascript', function() {
 
   var a = new Note("hello world")
-  equal(a.to_javascript(), 'new Note(\'hello world\\n\')')
+  equal(a.toJavascript(), 'new Note(\'hello world\\n\')')
 
   var b = new Note('hello \'world')
-  equal(b.to_javascript(), "new Note(\'hello \\\'world\\n\')")
+  equal(b.toJavascript(), "new Note(\'hello \\\'world\\n\')")
 
   var c = new Note('hello \'world\'')
-  equal(c.to_javascript(), "new Note(\'hello \\\'world\\\'\\n\')")
+  equal(c.toJavascript(), "new Note(\'hello \\\'world\\\'\\n\')")
 
   var d = new Note('hello "world"')
-  equal(d.to_javascript(), "new Note(\'hello \"world\"\\n\')")
+  equal(d.toJavascript(), "new Note(\'hello \"world\"\\n\')")
 
 })
 
-test('to_string', function() {
+test('toString', function() {
 
   var value = new Note('hello world')
-  equal(value.to_string(), 'hello world\n')
+  equal(value.toString(), 'hello world\n')
   value.foo = 'bar'
-  equal(value.to_string(), 'hello world\nfoo bar\n')
+  equal(value.toString(), 'hello world\nfoo bar\n')
 
   var a = new Note('john\n age 5')
-  equal(a.to_string(), 'john\n age 5\n')
-  ok(a.to_string() != 'john\n age 5')
+  equal(a.toString(), 'john\n age 5\n')
+  ok(a.toString() != 'john\n age 5')
 
   a.multiline = 'hello\nworld'
 
-  equal(a.to_string(), 'john\n age 5\nmultiline \n hello\n world\n')
+  equal(a.toString(), 'john\n age 5\nmultiline \n hello\n world\n')
 
   a.other = 'foobar'
 
-  equal(a.to_string(), 'john\n age 5\nmultiline \n hello\n world\nother foobar\n')
+  equal(a.toString(), 'john\n age 5\nmultiline \n hello\n world\nother foobar\n')
 
   b = new Note('a\n text \n  this is a multline string\n  and more')
-  equal(b.to_string(), 'a\n text \n  this is a multline string\n  and more\n')
+  equal(b.toString(), 'a\n text \n  this is a multline string\n  and more\n')
   a.even_more = b
-  equal(a.to_string(), 'john\n age 5\nmultiline \n hello\n world\nother foobar\neven_more\n a\n  text \n   this is a multline string\n   and more\n')
+  equal(a.toString(), 'john\n age 5\nmultiline \n hello\n world\nother foobar\neven_more\n a\n  text \n   this is a multline string\n   and more\n')
   
   
   var e = new Note('z-index 0')
@@ -646,14 +485,14 @@ test('union', function() {
   var b = new Note('maine me\nnew_york nyc\ncali ca')
   var c = new Note('maine me')
   var d = new Note('maine me\nflorida fl\ncali ca')
-  ok(a.union(b))
-  equal(a.union(b).length(), 3)
-  equal(a.union(c).length(), 1)
-  ok(a.union(c).equals(c))
+  ok(Note.union(a, b))
+  equal(Note.union(a, b).length(), 3)
+  equal(Note.union(a, c).length(), 1)
+  ok(Note.union(a, c).toString() === c.toString())
   
-  equal(a.union(b, c, d).length(), 1, 'union should take multiple params')
-  equal(a.union(b, d).length(), 2)
-  equal(d.union(a, b, c).length(), 1)
+  equal(Note.union(a, b, c, d).length(), 1, 'union should take multiple params')
+  equal(Note.union(a, b, d).length(), 2)
+  equal(Note.union(d, a, b, c).length(), 1)
   
   a = new Note('font-family Arial\nbackground red\ncolor blue\nwidth 10px')
   b = new Note('font-family Arial\nbackground green\ncolor blue\nwidth 10px')
@@ -661,22 +500,13 @@ test('union', function() {
   d = new Note('font-family Arial\nbackground #aaa\ncolor blue\nwidth 12px')
   e = new Note('font-family Arial\nbackground #fff\ncolor blue\nwidth 121px')
   
-  var union = a.union(b, c, d, e)
+  var union = Note.union(a, b, c, d, e)
   equal(union.length(), 2)
   equal(union.color, 'blue')
   equal(union['font-family'], 'Arial')
   
-  union = a.union.apply(a, [b, c, d, e])
+  union = Note.union.apply(a, [b, c, d, e])
   equal(union.length(), 2)
   
   
-})
-
-test('static properties', function() {
-  
-  ok(Note.copyright)
-  ok(Note.authors)
-  ok(Note.homepage)
-  ok(Note.license)
-
 })

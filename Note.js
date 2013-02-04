@@ -5,7 +5,7 @@ function Note(properties)
 {
   // Load from string
   if (typeof properties === 'string')
-    return this.load_from_string(properties)
+    return this.loadFromString(properties)
   
   // Load from object
   for (var i in properties) {
@@ -18,26 +18,62 @@ function Note(properties)
   }
 }
 
-Note.copyright = '2012 Nudge Inc.'
-Note.authors = 'Breck Yunits <breck7@gmail.com>, Ben Zulauf <bczulauf@gmail.com>'
-Note.homepage = 'github.com/breck7/note'
-Note.license = 'license www.opensource.org/licenses/MIT'
-
 /**
  * Escape HTML characters.
  * @param {string}
  * @return {string}
  */
-Note.escape_html = function (str) {
+Note.escapeHtml = function (str) {
   return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 }
 
 /**
- * @return {int} Length of the note as a string.
+ * @param {string}
+ * @param {int}
+ * @return {string}
  */
-Note.prototype.bytes = function () {
-  return this.to_string().length
+Note.strRepeat = function (string, count) {
+  var str = ''
+  for (var i = 0; i < count; i++) {
+    str += ' '
+  }
+  return str
 }
+
+/**
+ * Return a new Note with the name/value pairs that all passed notes contain.
+ * note: will probably be removed.
+ * @param {array} Array of Notes
+ * @return {Note}
+ */
+Note.union = function (notes) {
+  var union = Note.unionSingle(arguments[0], arguments[1])
+  for (var i in arguments) {
+    if (i === 1) continue // skip the first one
+    union = Note.unionSingle(union, arguments[i])
+    if (!union.length()) break
+  }
+  return union
+}
+
+/**
+ * note: will probably be removed.
+ * @param {Note}
+ * @return {Note}
+ */
+Note.unionSingle = function(noteA, noteB) {
+  var union = new Note()
+  for (var name in noteA.names()) {
+    if (noteA[name] instanceof Note)
+      union[name] = noteA[name].union(noteB[name])
+    if (noteA[name] === noteB[name])
+      union[name] = noteA[name]
+  }
+  return union
+}
+
+// Privates properties
+Note.prototype.privates = []
 
 /**
  * Deletes all names and values.
@@ -47,7 +83,6 @@ Note.prototype.clear = function () {
   for (var name in this.names()) {
     delete this[name] 
   }
-  this.trigger('change')
   return this
 }
 
@@ -108,92 +143,21 @@ Note.prototype.diff = function (note) {
   }
   // Leftovers are Additions
   for (var name in note.names()) {
-    if (this.is_public_property(name))
+    if (this.isPublicProperty(name))
       continue
     // If name is not a public property of note2, dont copy it
-    if (note instanceof Note && !note.is_public_property(name))
+    if (note instanceof Note && !note.isPublicProperty(name))
       continue
     if (typeof note[name] != 'object') {
       diff[name] = note[name]
       continue
     }
     else if (note[name] instanceof Note)
-      diff[name] = new Note(note[name].to_string())
+      diff[name] = new Note(note[name].toString())
     else
       diff[name] = new Note(note)
   }
   return diff
-}
-
-/**
- * Execute a function on each top name.
- * @param {function}
- * @return this
- */
-Note.prototype.each = function (fn) {
-  for (var name in this.names()) {
-    if (this[name] instanceof Note)
-      fn(this[name], name)
-  }
-  return this
-}
-
-/**
- * Are the Notes equal?
- * @param {Note}
- * @return {bool}
- */
-Note.prototype.equals = function (note) {
-  return this.to_string() === note.to_string()
-}
-
-/**
- * Does Note have any name/value pairs?
- * @return {bool}
- */
-Note.prototype.empty = function (note) {
-  for (var name in this) {
-    if (this.is_public_property(name))
-      return false
-  }
-  return true
-}
-
-/**
- * Remove Name/Value pairs that don't return true when passed to a function.
- * @param {function}
- * @return {Note}
- */
-Note.prototype.filter = function (fn) {
-  var copy = this.clone()
-  for (var name in copy.names()) {
-    if (!fn(copy[name]))
-      delete copy[name]
-  }
-  return copy
-}
-
-/**
- * Return the first name/value pair.
- * @return {Note}
- */
-Note.prototype.first = function () {
-  var first = new Note()
-  var copy = this.clone()
-  for (var name in copy.names()) {
-    first[name] = copy[name]
-    return first
-  }
-}
-
-/**
- * Return the first name
- * @return {string}
- */
-Note.prototype.first_name = function () {
-  for (var name in this.names()) {
-    return name
-  }
 }
 
 /**
@@ -220,20 +184,11 @@ Note.prototype.get = function (query, parent) {
 }
 
 /**
- * Run get but return a number or 0 if match isNan.
- * @return {number}
- */
-Note.prototype.get_float = function (query) {
-  var value = parseFloat(this.get(query))
-  return (isNaN(value) ? 0 : value)
-}
-
-/**
  * We wrap hasOwnProperty so we can check against private properties
  * @param {string}
  * @return {bool}
  */
-Note.prototype.is_private_property = function (name) {
+Note.prototype.isPrivateProperty = function (name) {
   for (var i in this.privates) {
     if (this.privates[i] === name)
       return true
@@ -246,51 +201,10 @@ Note.prototype.is_private_property = function (name) {
  * @param {string}
  * @return {bool}
  */
-Note.prototype.is_public_property = function (name) {
+Note.prototype.isPublicProperty = function (name) {
   if (!this.hasOwnProperty(name))
     return false
-  return !this.is_private_property(name)
-}
-
-/**
- * Return the last name/value pair.
- * @return {Note}
- */
-Note.prototype.last = function () {
-  var last = new Note()
-  var copy = this.clone()
-  for (var name in copy.names()) {
-    
-  }
-  last[name] = copy[name]
-  return last
-}
-
-/**
- * Return the last name.
- * @return {string}
- */
-Note.prototype.last_name = function () {
-  for (var name in this.names()) {
-  }
-  return name
-}
-
-/**
- * Return the number of leaves. Deep
- * @return {int}
- */
-Note.prototype.leaves = function () {
-  var size = 0
-  for (var name in this) {
-    if (!this.is_public_property(name))
-      continue
-    if (this[name] instanceof Note)
-      size += this[name].leafs()
-    else
-      size++
-  }
-  return size
+  return !this.isPrivateProperty(name)
 }
 
 /**
@@ -300,7 +214,7 @@ Note.prototype.leaves = function () {
 Note.prototype.length = function () {
   var size = 0
   for (var name in this) {
-    if (this.is_public_property(name))
+    if (this.isPublicProperty(name))
       size++
   }
   return size
@@ -311,7 +225,7 @@ Note.prototype.length = function () {
  * @param {string}
  * @return {Note}
  */
-Note.prototype.load_from_string = function (string) {
+Note.prototype.loadFromString = function (string) {
   
   // Note always start on a name. Eliminate whitespace at beginning of string
   string = string.replace(/^[\n ]*/, '')
@@ -348,24 +262,13 @@ Note.prototype.load_from_string = function (string) {
 }
 
 /**
- * Run a function on each name/value pair and return the resulting note.
- * @param {function}
- * @return {Note}
- */
-Note.prototype.map = function (fn) {
-  var copy = this.clone()
-  copy.each(fn)
-  return copy
-}
-
-/**
  * Return all names as an object.
  * @return {object}
  */
 Note.prototype.names = function () {
   var names = {}
   for (var i in this) {
-    if (!this.is_public_property(i))
+    if (!this.isPublicProperty(i))
       continue
     names[i] = i
   }
@@ -378,79 +281,11 @@ Note.prototype.names = function () {
  * @return {string}
  */
 Note.prototype.next = function (name) {
-  var sorted = this.sorted_array(),
+  var sorted = this.toArray(),
       next = sorted.indexOf(name) + 1
   if (sorted[next])
     return sorted[next]
   return sorted[0]
-}
-
-/**
- * Return a pretty HTML representation of the note.
- * @param {object}
- * @param {int}
- * @return {string}
- */
-Note.prototype.note_to_html = function (obj, spaces) {
-  if (!spaces)
-   spaces = 0
-  var string = ''
-  for (var name in obj) {
-    if (!obj.hasOwnProperty(name) || this.is_private_property(name))
-      continue
-    var value = obj[name]
-    if (typeof value === 'undefined')
-      value = ''
-    string += this.str_repeat(' ', spaces) + name
-    if (typeof value === 'object')
-      string += '\n' + this.note_to_html(value, spaces + 1)
-    else
-      string += ' <span style="color: #444444;">' + Note.escape_html(value.toString().replace(/\n/g, '\n' + this.str_repeat(' ', spaces + name.length + 1))) + '</span>\n'
-  }
-  return string
-}
-
-/**
- * Return the number of notes. Deep
- * @return {int}
- */
-Note.prototype.notes = function () {
-  var size = 0
-  for (var name in this) {
-    if (!this.is_public_property(name))
-      continue
-    if (!(this[name] instanceof Note))
-      continue
-    size++
-    size += this[name].notes()
-  }
-  return size
-}
-
-/**
- * Remove an event listener.
- * @param {string}
- * @param {function}
- * @return this
- */
-Note.prototype.off = function (event, fn) {
-  if (this._events && this._events[event] && this._events[event].indexOf(fn))
-    this._events[event].splice(1,  this._events[event].indexOf(fn))
-  return this
-}
-
-/**
- * Bind an event listener
- * @param {string}
- * @param {function}
- * @return this
- */
-Note.prototype.on = function (event, fn) {
-  if (!this._events)
-    this._events = {}
-  this._events[event] = []
-  this._events[event].push(fn)
-  return this
 }
 
 /**
@@ -466,7 +301,7 @@ Note.prototype.patch = function (patch) {
   for (var name in patch) {
     
     // Repeat logic from names()
-    if (!patch.hasOwnProperty(name) || this.is_private_property(name))
+    if (!patch.hasOwnProperty(name) || this.isPrivateProperty(name))
       continue
 
     // If patch value is a string, doesnt matter what type subject is.
@@ -485,7 +320,7 @@ Note.prototype.patch = function (patch) {
     }
     
     // If its an empty note, delete patch.
-    if (patch[name] instanceof Note && patch[name].empty()) {
+    if (patch[name] instanceof Note && !patch[name].length()) {
       delete this[name]
       continue
     }
@@ -499,41 +334,7 @@ Note.prototype.patch = function (patch) {
     // Final case. Do a deep copy of note.
     this[name] = new Note(patch[name])
   }
-  this.trigger('change', patch)
   return this
-}
-
-/**
- * Remove and return a name/value pair from the instance.
- * @param {string}
- * @return The value
- */
-Note.prototype.pluck = function (query) {
-  var result
-  if (!this[query])
-    return ''
-  if (this[query] instanceof Note)
-    result = this[query].clone()
-  else
-    result = this[query]
-  delete this[query]
-  return result
-}
-
-/**
- * Remove the last name/value pair from the instance.
- * @return The value
- */
-Note.prototype.pop = function () {
-  var result
-  for (var i in this.names()) {
-  }
-  if (this[i] instanceof Note)
-    result = this[i].clone()
-  else
-    result = this[i]
-  delete this[i]
-  return result
 }
 
 /**
@@ -542,28 +343,11 @@ Note.prototype.pop = function () {
  * @return {string}
  */
 Note.prototype.prev = function (name) {
-  var sorted = this.sorted_array(),
+  var sorted = this.toSortedArray(),
       next = sorted.indexOf(name) - 1
   if (next >= 0)
     return sorted[next]
   return sorted[sorted.length - 1]
-}
-
-/**
- * String containing properties to not iterate over.
- */
-Note.prototype.privates = ['_events']
-
-/**
- * Delete the first element from the Note and return the rest as a new Note.
- * @return {Note}
- */
-Note.prototype.rest = function () {
-  var copy = this.clone()
-  for (var name in this.names()) {
-    delete copy[name]
-    return copy
-  }
 }
 
 /**
@@ -611,24 +395,109 @@ Note.prototype.set = function (query, value) {
   }
   edge[parts[i]] = value
   this.patch(patch)
-  this.trigger('change')
   return this
 }
 
 /**
- * Return and delete the first name/value in the Note.
- * @return The value
+ * @return {string}
  */
-Note.prototype.shift = function () {
-  var result
-  for (var i in this.names()) {
-    if (this[i] instanceof Note)
-      result = this[i].clone()
-    else
-      result = this[i]
-    delete this[i]
-    return result
+Note.prototype.stringify = function () {
+  return this.toJavascript()
+}
+
+/**
+ * Return an array of the keys
+ * @return {Array}
+ */
+Note.prototype.toArray = function () {
+  var output = []
+  for (var i in this) {
+    if (!this.hasOwnProperty(i))
+      continue
+    output.push(i)
   }
+  return output
+}
+
+/**
+ * Return a pretty HTML printout of the note.
+ * @return {string}
+ */
+Note.prototype.toHtml = function () {
+  return '<pre style="color: #888888;">' + this.toHtmlHelper(this) + '</pre>'
+}
+
+/**
+ * Return a pretty HTML representation of the note.
+ * @param {object}
+ * @param {int}
+ * @return {string}
+ */
+Note.prototype.toHtmlHelper = function (obj, spaces) {
+  if (!spaces)
+   spaces = 0
+  var string = ''
+  for (var name in obj) {
+    if (!obj.hasOwnProperty(name) || this.isPrivateProperty(name))
+      continue
+    var value = obj[name]
+    if (typeof value === 'undefined')
+      value = ''
+    string += Note.strRepeat(' ', spaces) + name
+    if (typeof value === 'object')
+      string += '\n' + this.toHtmlHelper(value, spaces + 1)
+    else
+      string += ' <span style="color: #444444;">' + Note.escapeHtml(value.toString().replace(/\n/g, '\n' + Note.strRepeat(' ', spaces + name.length + 1))) + '</span>\n'
+  }
+  return string
+}
+
+/**
+ * Return executable javascript code.
+ * @return {string}
+ */
+Note.prototype.toJavascript = function () {
+  return 'new Note(\'' + this.toString().replace(/\n/g, '\\n').replace(/\'/g, '\\\'') + '\')'
+}
+
+/**
+ * Return the object as JSON.
+ * @return {string}
+ */
+Note.prototype.toJSON = function () {
+  return JSON.stringify(this)
+}
+
+/**
+ * @return {object}
+ */
+Note.prototype.toObject = function () {
+  var obj = {}
+  for (var name in this) {
+    if (!this.isPublicProperty(name))
+      continue
+    if (this[name] instanceof Note)
+     obj[name] = this[name].toObject()
+    else
+     obj[name] = this[name]
+  }
+  return obj
+}
+
+/**
+ * Return a sorted array
+ * http://ejohn.org/blog/javascript-in-chrome/
+ * @return {array}
+ */
+Note.prototype.toSortedArray = function () {
+  var result = []
+  for (var name in this.names()) {
+    if (!this.isPublicProperty(name))
+      continue
+    result.push(name)
+  }
+  result = result.sort()
+  return result
 }
 
 /**
@@ -637,7 +506,7 @@ Note.prototype.shift = function () {
  * @param {bool} Return Largest to Smallest?
  * @return {note}
  */
-Note.prototype.sort_by_name = function (reverse) {
+Note.prototype.toSortedNote = function (reverse) {
   
   var result = []
   for (var name in this.names()) {
@@ -662,13 +531,13 @@ Note.prototype.sort_by_name = function (reverse) {
  *  breck
  *   age 28
  *
- *  note.sort_by_property(age) (return ben, breck)
+ *  note.toSortedNoteBy('age') (return ben, breck)
  *
  * @param {string}
  * @param {bool} Return largest to smallest?
  * @return {note}
  */
-Note.prototype.sort_by_property = function (property_name, reverse) {
+Note.prototype.toSortedNoteBy = function (property_name, reverse) {
   
   var result = []
   for (var name in this.names()) {
@@ -683,79 +552,16 @@ Note.prototype.sort_by_property = function (property_name, reverse) {
 }
 
 /**
- * Return a sorted array
- * http://ejohn.org/blog/javascript-in-chrome/
- * @param {function}
- * @return {array}
- */
-Note.prototype.sorted_array = function (sort_fn) {
-  var result = []
-  for (var name in this.names()) {
-    if (!this.is_public_property(name))
-      continue
-    result.push(name)
-  }
-  result = result.sort()
-  return result
-}
-
-/**
- * @param {string}
- * @param {int}
  * @return {string}
  */
-Note.prototype.str_repeat = function (string, count) {
-  var str = ''
-  for (var i = 0; i < count; i++) {
-    str += ' '
-  }
-  return str
-}
-
-/**
- * @return {string}
- */
-Note.prototype.stringify = function () {
-  return this.to_javascript()
-}
-
-/**
- * Return a pretty HTML printout of the note.
- * @return {string}
- */
-Note.prototype.to_html = function () {
-  return '<pre style="color: #888888;">' + this.note_to_html(this) + '</pre>'
-}
-
-/**
- * Return executable javascript code.
- * @return {string}
- */
-Note.prototype.to_javascript = function () {
-  return 'new Note(\'' + this.to_string().replace(/\n/g, '\\n').replace(/\'/g, '\\\'') + '\')'
-}
-
-/**
- * Return the object as JSON.
- * @return {string}
- */
-Note.prototype.to_json = function () {
-  return JSON.stringify(this)
-}
-
-/**
- * Return the instance in Note notation.
- * @param {int}
- * @return {string}
- */
-Note.prototype.to_string = function (spaces) {
+Note.prototype.toString =  function (spaces) {
   spaces = spaces || 0
   var string = ''
   // Iterate over each property
   for (var name in this) {
     
     // Skip private properties
-    if (!this.is_public_property(name))
+    if (!this.isPublicProperty(name))
       continue
     
     // If property value is undefined
@@ -765,15 +571,15 @@ Note.prototype.to_string = function (spaces) {
     }
 
     // Set up the name part of the name/value pair
-    string += this.str_repeat(' ', spaces) + name
+    string += Note.strRepeat(' ', spaces) + name
     
     // If the value is a note, concatenate it
     if (this[name] instanceof Note)
-      string += '\n' + this[name].to_string(spaces + 1)
+      string += '\n' + this[name].toString(spaces + 1)
     
     // If an object (other than class of note) snuck in there
     else if (typeof this[name] === 'object')
-      string += '\n' + new Note(this[name]).to_string(spaces + 1)
+      string += '\n' + new Note(this[name]).toString(spaces + 1)
     
     // dont put a blank string on blank values.
     else if (this[name].toString() === '')
@@ -781,7 +587,7 @@ Note.prototype.to_string = function (spaces) {
     
     // multiline string
     else if (this[name].toString().match(/\n/))
-      string += ' \n' + this.str_repeat(' ', spaces + 1) + this[name].toString().replace(/\n/g, '\n' + this.str_repeat(' ', spaces + 1)) + '\n'
+      string += ' \n' + Note.strRepeat(' ', spaces + 1) + this[name].toString().replace(/\n/g, '\n' + Note.strRepeat(' ', spaces + 1)) + '\n'
     
     // Plain string
     else
@@ -791,69 +597,17 @@ Note.prototype.to_string = function (spaces) {
 }
 
 /**
- * @return {object}
+ * Return an array of tuples
+ * @return {Array}
  */
-Note.prototype.toObject = function () {
-  var obj = {}
-  for (var name in this) {
-    if (!this.is_public_property(name))
+Note.prototype.toTuples = function () {
+  var output = []
+  for (var i in this) {
+    if (!this.hasOwnProperty(i))
       continue
-    if (this[name] instanceof Note)
-     obj[name] = this[name].toObject()
-    else
-     obj[name] = this[name]
+    output.push([i, this[i]])
   }
-  return obj
-}
-
-/**
- * @return {string}
- */
-Note.prototype.toString =  function () {
-  return this.to_string()
-}
-
-/**
- * @param {string}
- * @param {array}
- *
- */
-Note.prototype.trigger = function (event, params) {
-  if (!this._events || !this._events[event])
-    return ''
-  for (var i in this._events[event]) {
-    this._events[event][i].call(this, params)
-  }
-}
-
-/**
- * Return a new Note with the name/value pairs that all passed notes contain.
- * @param {array} Array of Notes or one note
- * @return {Note}
- */
-Note.prototype.union = function (note_or_notes) {
-  var union = this.union_single(arguments[0])
-  for (var i in arguments) {
-    if (i === 0) continue // skip the first one
-    union = union.union_single(arguments[i])
-    if (!union.length()) break
-  }
-  return union
-}
-
-/**
- * @param {Note}
- * @return {Note}
- */
-Note.prototype.union_single = function(note) {
-  var union = new Note()
-  for (var name in this.names()) {
-    if (this[name] instanceof Note)
-      union[name] = this[name].union(note[name])
-    if (this[name] === note[name])
-      union[name] = this[name]
-  }
-  return union
+  return output
 }
 
 // Export Note for use in Node.js
