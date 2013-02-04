@@ -1,6 +1,6 @@
 {
   "name": "note",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Encode your data without syntax.",
   "main": "./Note.js",
   "scripts": {

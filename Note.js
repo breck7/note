@@ -46,7 +46,7 @@ Note.strRepeat = function (string, count) {
  * @param {array} Array of Notes
  * @return {Note}
  */
-Note.union = function (notes) {
+Note.union = function () {
   var union = Note.unionSingle(arguments[0], arguments[1])
   for (var i in arguments) {
     if (i === 1) continue // skip the first one
@@ -63,9 +63,11 @@ Note.union = function (notes) {
  */
 Note.unionSingle = function(noteA, noteB) {
   var union = new Note()
+  if (!(noteB instanceof Note))
+    return union
   for (var name in noteA.names()) {
-    if (noteA[name] instanceof Note)
-      union[name] = noteA[name].union(noteB[name])
+    if (noteA[name] instanceof Note && noteB[name] && noteB[name] instanceof Note)
+      union[name] = Note.unionSingle(noteA[name], noteB[name])
     if (noteA[name] === noteB[name])
       union[name] = noteA[name]
   }
