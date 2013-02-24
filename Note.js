@@ -19,15 +19,6 @@ function Note(properties)
 }
 
 /**
- * Escape HTML characters.
- * @param {string}
- * @return {string}
- */
-Note.escapeHtml = function (str) {
-  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
-}
-
-/**
  * @param {string}
  * @param {int}
  * @return {string}
@@ -422,39 +413,6 @@ Note.prototype.toArray = function () {
 }
 
 /**
- * Return a pretty HTML printout of the note.
- * @return {string}
- */
-Note.prototype.toHtml = function () {
-  return '<pre style="color: #888888;">' + this.toHtmlHelper(this) + '</pre>'
-}
-
-/**
- * Return a pretty HTML representation of the note.
- * @param {object}
- * @param {int}
- * @return {string}
- */
-Note.prototype.toHtmlHelper = function (obj, spaces) {
-  if (!spaces)
-   spaces = 0
-  var string = ''
-  for (var name in obj) {
-    if (!obj.hasOwnProperty(name) || this.isPrivateProperty(name))
-      continue
-    var value = obj[name]
-    if (typeof value === 'undefined')
-      value = ''
-    string += Note.strRepeat(' ', spaces) + name
-    if (typeof value === 'object')
-      string += '\n' + this.toHtmlHelper(value, spaces + 1)
-    else
-      string += ' <span style="color: #444444;">' + Note.escapeHtml(value.toString().replace(/\n/g, '\n' + Note.strRepeat(' ', spaces + name.length + 1))) + '</span>\n'
-  }
-  return string
-}
-
-/**
  * Return executable javascript code.
  * @return {string}
  */
@@ -596,20 +554,6 @@ Note.prototype.toString =  function (spaces) {
       string += ' ' + this[name].toString() + '\n'
   }
   return string
-}
-
-/**
- * Return an array of tuples
- * @return {Array}
- */
-Note.prototype.toTuples = function () {
-  var output = []
-  for (var i in this) {
-    if (!this.hasOwnProperty(i))
-      continue
-    output.push([i, this[i]])
-  }
-  return output
 }
 
 // Export Note for use in Node.js

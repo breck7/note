@@ -182,17 +182,6 @@ test('diff', function() {
 
 })
 
-
-test('escapeHtml', function() {
-  var a = new Note()
-  equal(Note.escapeHtml('<'), '&lt;')
-  equal(Note.escapeHtml('<<'), '&lt;&lt;')
-  equal(Note.escapeHtml('>'), '&gt;')
-  equal(Note.escapeHtml('&'), '&amp;')
-  equal(Note.escapeHtml('"'), '&quot;')
-  equal(Note.escapeHtml('<a href="foobar">at&b</a>'), '&lt;a href=&quot;foobar&quot;&gt;at&amp;b&lt;/a&gt;')
-})
-
 test('get', function() {
 
   var value = new Note('hello world')
@@ -425,12 +414,6 @@ test('loadFromString', function() {
   equal(c.toString().length, string.length)
   equal(c.toString(), string)
 
-})
-
-test('toHtml', function() {
-
-  var a = new Note('john\n age 5')
-  equal(a.toHtml(), '<pre style="color: #888888;">john\n age <span style="color: #444444;">5</span>\n</pre>')
 })
 
 test('toJavascript', function() {
