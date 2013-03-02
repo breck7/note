@@ -26,6 +26,8 @@ a value of type Note, consisting of an empty Note.
 
 A value is an array of chars (string). Values can contain any char, but
 Newline chars must be escaped. To escape a newline char in a value, precede
-the Newline char with a Newline char + N Space chars, where N is equal to the number of spaces preceding the key + 1. A value is terminated by an unescaped Newline char. A value can also be terminated by an End of File char.
+the Newline char with a Newline char + N Space chars, where N is equal to the
+number of spaces preceding the key + 1. A value is terminated by an unescaped
+Newline char. A value can also be terminated by an End of File char.
 
 This is the full spec of Note.
