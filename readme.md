@@ -32,6 +32,8 @@ Design Goals
 Technical Spec
 --------------
 
+The following is a higher level overview of the spec. The actual technical spec can be read here: https://github.com/breck7/note/blob/master/spec.txt
+
 **Data Structures**. Note is a serialization format for recursive hash tables. Note uses 2 data structures: hash tables and strings.
 
 **Syntax Characters**. Note has two special characters:
@@ -39,13 +41,15 @@ Technical Spec
 1. The Space Character.
 2. The New Line Character.
 
-A Note object is simply a hash table. A single space character(" ") separates a name with its value. A new line separates pairs. Names are always strings. Names can contain any character except space or newline. Values can be either strings or nested Note objects and can contain any character. A newline plus indented space indicates a nested hash table.
+A Note object is simply a hash table. A single space character(" ") separates a name with its value. A newline separates pairs. Names are always strings. Names can contain any character except space or newline. Values can be either strings or nested Note objects and can contain any character. A newline plus indented space indicates a nested hash table.
 
 
 Programming Languages
 ---------------------
 
 Note does not care what programming language you use. Although the implementation of Note included here is built in Javascript, Note can be read, written, and modified easily with any programming language. In fact, one of the main benefits of Note is that it can be used by many programs, with many different languages, and they can all easily share hash tables using Note.
+
+More implementations are coming soon.
 
 More Examples
 -------------
@@ -121,7 +125,7 @@ Javascript API
 
 The Javascript library in this repo works in both the browser and with Node.js.
 
-The API is still somewhat in flux, but there are many neat methods such as diff, patch, and toString that demonstrate some neat features of Note.
+The API in the Javascript implementation is still somewhat in flux, but there are many neat methods such as diff, patch, and toString that demonstrate some neat features of Note.
 
 Contributing
 ------------
@@ -165,7 +169,7 @@ is equivalent to
      joe
      sam
 
-If order is important for your application, you must specify the numbers:
+If order is important for your application, you could specify the numbers:
 
     winners
      1 joe
