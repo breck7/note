@@ -1,4 +1,7 @@
-A Note is an array of bytes/characters(hereafter abbreviated as chars). This sequence of chars represents a hash table. There are two special chars in Note which turn an otherwise unstructured linear sequence of chars into a structured recursive hash table. Those two chars are:
+A Note is an array of bytes/characters(hereafter abbreviated as chars).
+This sequence of chars represents a hash table. There are two special
+chars in Note which turn an otherwise unstructured linear sequence of
+chars into a structured recursive hash table. Those two chars are:
 
 Space char
 Keyboard: Space Key
@@ -12,10 +15,17 @@ Binary: 00001010
 Hex: 0A
 Decimal: 10
 
-The higher level structures of Note are the two structures of a hash table: keys and values.
+The higher level structures of Note are the two structures of a hash
+table: keys and values.
 
-A key is an array of any chars other than Space or Newline. A key is terminated by a Space or Newline. A key terminated by a Space has a value of type "array of chars" (string). A key terminated by a Newline has a value of type Note. A key terminated by an End of File char has a value of type Note, consisting of an empty Note.
+A key is an array of any chars other than Space or Newline. A key is
+terminated by a Space or Newline. A key terminated by a Space has a
+value of type "array of chars" (string). A key terminated by a Newline
+has a value of type Note. A key terminated by an End of File char has
+a value of type Note, consisting of an empty Note.
 
-A value is an array of chars (string). Values can contain any char, but Newline chars must be escaped. To escape a newline char in a value, precede the Newline char with a Newline char + N Space chars, where N is equal to the number of spaces preceding the key + 1. A value is terminated by an unescaped Newline char. A value can also be terminated by an End of File char.
+A value is an array of chars (string). Values can contain any char, but
+Newline chars must be escaped. To escape a newline char in a value, precede
+the Newline char with a Newline char + N Space chars, where N is equal to the number of spaces preceding the key + 1. A value is terminated by an unescaped Newline char. A value can also be terminated by an End of File char.
 
 This is the full spec of Note.
