@@ -1,0 +1,8 @@
+paths ~/note/bin/build
+recursive true
+query type
+extension note
+onmatch 
+ note.content = new Note()
+ note.content.text = 'hello world'
+saveAs ~/output.note

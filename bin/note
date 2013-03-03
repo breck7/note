@@ -28,8 +28,15 @@ if (args.length < 1) {
   process.exit(1)
 }
 
+// Resolve ~
+function resolvePath (string) {
+  if (string.substr(0,1) === '~')
+    string = process.env.HOME + string.substr(1)
+  return path.resolve(string)
+}
+
 // Resolve the absolute jobPath to allow for things like ~/job.note
-var jobPath = path.resolve(args[0])
+var jobPath = resolvePath(args[0])
 
 // Require that the file exists
 if (!fs.existsSync(jobPath)) {
@@ -61,8 +68,8 @@ Job.prototype.dir = function (dir) {
     eval(this.ondir(dir))
 
   // recursively find all files that match path
-  var files = fs.readdirSync(path)
-  files = _.map(files, function (file) {return path + '/' + file})
+  var files = fs.readdirSync(dir)
+  files = _.map(files, function (file) {return dir + '/' + file})
   _.each(files, this.file, this)
 
 }
@@ -72,7 +79,7 @@ Job.prototype.complete = function () {
     eval(this.oncomplete())
   
   if (this.saveAs)
-    fs.writeFileSync(path.resolve(this.saveAs), this.matches.toString(), 'utf8')
+    fs.writeFileSync(resolvePath(this.saveAs), this.matches.toString(), 'utf8')
   
   if (this.quiet !== 'true') {
     console.log(this.matches.toString())
@@ -124,15 +131,15 @@ Job.prototype.miss = function (file, note) {
 
 Job.prototype.prepare = function () {
 
-  this._paths = this.paths.split(/ /)
+  this._paths = _.map(this.paths.split(/ /), function (dir) { return resolvePath(dir)})
   this.filenameRegex =  new RegExp('\.' + this.extension + '$', 'i')
   this.searchRegex = new RegExp(this.query, 'g')
   
   if (this.onmatch)
-    eval('this.onmatch = function (note) { ' + this.onmatch + '; return note }')
+    eval('this.onmatch = function (note) { ' + this.onmatch + '\n; return note }')
   
   if (this.onmiss)
-    eval('this.onmiss = function (file) { ' + this.onmiss + '; return file }')
+    eval('this.onmiss = function (file) { ' + this.onmiss + '\n; return file }')
 
   
 
