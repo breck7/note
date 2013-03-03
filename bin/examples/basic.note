@@ -1,0 +1,6 @@
+paths ~/note/
+recursive true
+query extension
+extension note
+onmatch // do nothing
+saveAs ~/output.note

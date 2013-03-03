@@ -1,4 +1,3 @@
-action search
 path test/
 recursive true
 query some nested value

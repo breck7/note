@@ -1,135 +1,175 @@
 #!/usr/bin/env node
+/** 
+ * Keeping a large corpus of Note files up to date with the latest
+ * encoding, such as blocks, or making mass numbers of changes to the content
+ * can be a pain as the number of files increases.
+ *
+ * This is a global find/replace utility for Note that makes it easy to
+ * manage a large number of Notes.
+ *
+ * Takes a job, written in Note, and applies to a directory(ies).
+ *
+ * Synchronous.
+ * 
+ ***/
 
 var fs = require("fs"),
     exec = require('child_process').exec,
     os = require('os'),
-    Note = require("note")
-
-var command
-var output = new Note()
-var outputFilepath = 'output.note'
-var inputFilename
+    Note = require("note"),
+    _ = require("underscore"),
+    path = require('path')
 
 var args = process.argv.slice(2)
+
+// Require that a filename is provided
 if (args.length < 1) {
-  console.log('No filename provided. Usage: note command.note')
-  process.exit(1)
-}
-inputFilename = args[0]
-
-
-// Direct Command
-if (!inputFilename.match(/ /)) {
-  if (!fs.existsSync(inputFilename)) {
-    console.log('File ' + inputFilename + ' does not exist.')
-    process.exit(1)
-  }
-
-  var file = fs.readFileSync(inputFilename, 'utf8')
-
-  command = new Note(file)  
-} else {
-  command = new Note(args[0])
-}
-
-if (command.outputFilepath)
-  outputFilepath = command.outputFilepath
-
-if (!command.action) {
-  console.log('No action provided')
+  console.log('No filename provided. Usage: note job.note')
   process.exit(1)
 }
 
-var commands = {}
+// Resolve the absolute jobPath to allow for things like ~/job.note
+var jobPath = path.resolve(args[0])
 
-var searchDirectory = function (path, command) {
+// Require that the file exists
+if (!fs.existsSync(jobPath)) {
+  console.log('File ' + jobPath + ' does not exist.')
+  process.exit(1)
+}
 
-  var extension = command.extension || 'note'
-  var filenameRegex =  new RegExp('\.' + extension + '$', 'i')
-  var searchRegex = new RegExp(command.query, 'g')
+// Read the file
+var jobFile = fs.readFileSync(jobPath, 'utf8')
+
+// Require that the file was read & has content
+if (!jobFile) {
+  console.log('Empty file or trouble reading it.')
+  process.exit(1)
+}
+
+function Job(note) {
+  if (note)
+   this.patch(note)
+}
+
+Job.prototype = new Note()
+Job.prototype.matches = new Note()
+Job.prototype.misses = new Note()
+Job.prototype.extension = 'note'
+
+Job.prototype.dir = function (dir) {
+  if (this.ondir)
+    eval(this.ondir(dir))
 
   // recursively find all files that match path
   var files = fs.readdirSync(path)
-  for (var i in files) {
+  files = _.map(files, function (file) {return path + '/' + file})
+  _.each(files, this.file, this)
+
+}
+
+Job.prototype.complete = function () {
+  if (this.oncomplete)
+    eval(this.oncomplete())
   
-    var filename = files[i]
-    
-    if (command.recursive === 'true') {
-      if (fs.statSync(path + filename).isDirectory()) {
-        searchDirectory(path + filename + '/', command)
-        continue
-      }
-    }
-    
-    if (!filename.match(filenameRegex))
-      continue
-    
-    var file = fs.readFileSync(path + filename, 'utf8')
-    
-    if (command.fullText) {
-      var match = file.match(searchRegex)
-      if (!match)
-        continue
-      
-      output[path + filename] = new Note(match)
-      continue
-    }
-    
-    var note = new Note(file)
-    
-    if (!note.get(command.query))
-      continue
-    
-    // Match :)
-    output[path + filename] = note.get(command.query)
-    
-    if (command.modify) {
-      var match
-      eval('match = function (note) { ' + command.modify + '; return note }')
-      note = match(note)
-      fs.writeFileSync(path + filename, note.toString(), 'utf8')
-    }
-    
+  if (this.saveAs)
+    fs.writeFileSync(path.resolve(this.saveAs), this.matches.toString(), 'utf8')
+  
+  if (this.quiet !== 'true') {
+    console.log(this.matches.toString())
+    console.log('Job complete.')
   }
 }
 
-commands.perl = function (command) {
-  exec(
-  'perl -e "s|' + command.search +
-  '|' + command.replace +
-  '|g;" -pi $(find ' +
-  command.path + ' -type f)')
+Job.prototype.file = function (file) {
+  if (this.onfile)
+    eval(this.onfile(file))
+  
+  if (this.recursive === 'true') {
+    if (fs.statSync(file).isDirectory())
+      return this.dir(file)
+  }
+  
+  if (!file.match(this.filenameRegex))
+    return false
+
+  var content = fs.readFileSync(file, 'utf8')
+  
+  // todo: add dumb text find/replace ability.
+  
+  var note = new Note(content)
+  var match = note.get(this.query)
+  if (match)
+    this.match(file, note, match)
+  else
+    this.miss(file, note)
+  
 }
 
-commands.search = function (command) {
-  console.log('searching')
+Job.prototype.match = function (file, note, match) {
   
-  if (!command.path) {
+  this.matches[file] = match
+  
+  if (!this.onmatch)
+    return false
+  fs.writeFileSync(file, this.onmatch(note).toString(), 'utf8')
+}
+
+Job.prototype.miss = function (file, note) {
+  
+  this.misses[file] = 'miss'
+  
+  if (this.onmiss)
+    this.onmiss(file)
+}
+
+Job.prototype.prepare = function () {
+
+  this._paths = this.paths.split(/ /)
+  this.filenameRegex =  new RegExp('\.' + this.extension + '$', 'i')
+  this.searchRegex = new RegExp(this.query, 'g')
+  
+  if (this.onmatch)
+    eval('this.onmatch = function (note) { ' + this.onmatch + '; return note }')
+  
+  if (this.onmiss)
+    eval('this.onmiss = function (file) { ' + this.onmiss + '; return file }')
+
+  
+
+}
+
+Job.prototype.start = function () {
+  
+  if (this.quiet !== 'true')
+    console.log('Starting job...')
+  
+  if (this.onstart)
+    eval(this.onstart)
+  
+  _.each(this._paths, this.dir, this)
+  
+}
+
+Job.prototype.validate = function () {
+  
+  if (!this.paths) {
     console.log('Provide a path.')
     process.exit(1)
   }
   
-  if (!command.query) {
+  if (!this.query) {
     console.log('Provide a query.')
     process.exit(1)
   }
   
-  if (!fs.existsSync(command.path)) {
-    console.log('Path ' + command.path + ' does not exist.')
-    process.exit(1)
-  }
-  
-  // recursively find all files that match path
-  searchDirectory(command.path, command)
-  
 }
 
-if (!commands[command.action]) {
-  console.log('No action provided')
-  process.exit(1)
-}
 
-commands[command.action](command)
-fs.writeFileSync(outputFilepath, output.toString(), 'utf8')
-console.log(output.toString())
+var job = new Job(jobFile)
+job.validate()
+job.prepare()
+job.start()
+job.complete()
 process.exit(0)
+
+
