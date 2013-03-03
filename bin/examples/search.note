@@ -1,5 +1,0 @@
-path test/
-recursive true
-query some nested value
-extension note
-outputFilepath output.note

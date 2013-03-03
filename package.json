@@ -1,6 +1,6 @@
 {
   "name": "note",
-  "version": "1.2.3",
+  "version": "1.2.31",
   "description": "Encode your data without syntax.",
   "main": "./Note.js",
   "scripts": {
@@ -16,9 +16,6 @@
     "json",
     "xml"
   ],
-  "bin": {
-    "note": "./bin/note"
-  },
   "devDependencies": {
     "qunit": "~0.5.1"
   },
