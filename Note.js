@@ -1,3 +1,8 @@
+// If Node.js, import dependencies.
+if (typeof exports != 'undefined') {
+  var _ = require('underscore')
+}
+
 /**
  * @param {string|array|object|Note}
  */
