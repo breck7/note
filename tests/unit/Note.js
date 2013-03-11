@@ -182,6 +182,18 @@ test('diff', function() {
 
 })
 
+test('duplicate key', function() {
+
+var noteWithDupe = 'height 45px\n\
+height 50px\n\
+width 56px'
+
+  var value = new Note(noteWithDupe)
+  // When turning a string into a Note object and given a duplicate key, last item should win
+  equal(value.get('height'), '50px')
+
+})
+
 test('get', function() {
 
   var value = new Note('hello world')
