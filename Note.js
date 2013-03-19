@@ -1,4 +1,10 @@
 /**
+ * Version 1.2.31
+ * Source http://github.com/breck7/note
+ * License MIT
+ */
+
+/**
  * @param {string|array|object|Note}
  */
 function Note(properties)

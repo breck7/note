@@ -480,14 +480,14 @@ test('union', function() {
   var b = new Note('maine me\nnew_york nyc\ncali ca')
   var c = new Note('maine me')
   var d = new Note('maine me\nflorida fl\ncali ca')
-  ok(Note.union(a, b))
-  equal(Note.union(a, b).length(), 3)
-  equal(Note.union(a, c).length(), 1)
-  ok(Note.union(a, c).toString() === c.toString())
+  ok(Note.union(a, b), 'a and b are same')
+  equal(Note.union(a, b).length(), 3, 'union should have 3 items')
+  equal(Note.union(a, c).length(), 1, 'union should have 1 item')
+  ok(Note.union(a, c).toString() === c.toString(), 'union should be equal to c')
   
   equal(Note.union(a, b, c, d).length(), 1, 'union should take multiple params')
-  equal(Note.union(a, b, d).length(), 2)
-  equal(Note.union(d, a, b, c).length(), 1)
+  equal(Note.union(a, b, d).length(), 2, 'union should be 2 long')
+  equal(Note.union(d, a, b, c).length(), 1, 'union should 1 be long')
   
   a = new Note('font-family Arial\nbackground red\ncolor blue\nwidth 10px')
   b = new Note('font-family Arial\nbackground green\ncolor blue\nwidth 10px')
@@ -496,12 +496,12 @@ test('union', function() {
   e = new Note('font-family Arial\nbackground #fff\ncolor blue\nwidth 121px')
   
   var union = Note.union(a, b, c, d, e)
-  equal(union.length(), 2)
-  equal(union.color, 'blue')
-  equal(union['font-family'], 'Arial')
+  equal(union.length(), 2, 'should should have length 2')
+  equal(union.color, 'blue', 'union should have color blue')
+  equal(union['font-family'], 'Arial', 'union should have font family arial')
   
   union = Note.union.apply(a, [b, c, d, e])
-  equal(union.length(), 2)
+  equal(union.length(), 2, 'union should have length 2')
   
   
 })
