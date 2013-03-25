@@ -5,19 +5,49 @@ Note is a concise encoding for hash tables.
 
 Note is designed to make it easy for both humans and programmers to read, write, edit, and share hash tables.
 
-Example
--------
+Examples
+--------
 
-Here's how I could encode a hash table named Earth:
+Here's how I could encode data about myself:
 
-    Earth
-     age 4,540,000,000yrs
-     moons 1
-     neighbors
-      Mars
-      Venus
-     population 6,973,738,433
-     radius 6.371km
+    firstName Breck
+    lastName Yunits
+    birthday 02/26/1984
+    email breck7@gmail.com
+
+Here's how I could encode a tax return:
+
+    socialSecurityNumber 555-55-5555
+    name John Smith
+    taxYear 2012
+    income 10,000
+    dependents 1
+    exemptions 2
+    address 123 Main Street
+    city San Francisco
+    state California
+   
+Here's how I could encode nested analytics about a website:
+
+    /homepage
+     pageviews 2312
+     uniques 231
+     referers
+      /about 23
+      /contact 41
+    /about
+     pageviews 314
+     uniques 201
+     referers
+      /home 100
+      /contact 21
+    /contact
+     pageviews 214
+     uniques 124
+     referers
+      /home 110
+      /about 10
+    
 
 Design Goals
 ------------
