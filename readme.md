@@ -1,3 +1,6 @@
+Update: Note has been replaced by Space: https://github.com/nudgepad/space
+
+
 Note
 ====
 
